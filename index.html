@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mumlu Köşe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;background:#F6F4F0;color:#1F1F1D}
+button{font-family:inherit}
+.btn{background:#2F4A3A;color:#fff;border:0;border-radius:999px;height:48px;padding:0 26px;font:inherit;font-size:15px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,background .15s}
+.btn:hover{background:#263E30}
+.btn:active{transform:scale(.98)}
+.btn2{background:transparent;color:#1F1F1D;border:1.5px solid #1F1F1D;border-radius:999px;height:48px;padding:0 26px;font:inherit;font-size:15px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
+.btn2:hover{background:#ECE8E0}
+.sm{height:40px;padding:0 18px;font-size:14px}
+.card{background:#fff;border-radius:20px;box-shadow:0 1px 2px rgba(31,31,29,.05),0 8px 24px rgba(31,31,29,.06)}
+.pc{transition:transform .2s}
+.pc:hover{transform:translateY(-4px)}
+.chip{border:1px solid #DDD8CE;border-radius:999px;height:40px;padding:0 18px;font:inherit;font-size:14px;cursor:pointer;background:#fff;color:#1F1F1D}
+.chip.on{background:#1F1F1D;color:#F6F4F0}
+.inp{width:100%;height:50px;border:1px solid #D8D3C9;border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:#fff;color:#1F1F1D}
+.inp:focus{outline:2px solid #2F4A3A;outline-offset:1px}
+textarea.inp{height:auto;padding:12px 14px}
+.lbl{font-size:13px;color:#5E5C56;margin-bottom:6px;display:block}
+.navb{background:none;border:0;font:inherit;font-size:15px;cursor:pointer;color:#1F1F1D;padding:8px 4px}
+.navb:hover,.navb.on{color:#2F4A3A}
+.navb.on{font-weight:600}
+.ib{width:36px;height:36px;border-radius:50%;border:1px solid #DDD8CE;background:#fff;cursor:pointer;font:inherit;font-size:18px;line-height:1;color:#1F1F1D}
+.lnk{background:none;border:0;color:#D9D5CC;cursor:pointer;font:inherit;padding:2px 0}
+button:focus-visible{outline:2px solid #2F4A3A;outline-offset:2px}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding-left:clamp(16px,4vw,48px);padding-right:clamp(16px,4vw,48px)}
+.err{background:#F6DEDA;color:#7A2A20;border-radius:12px;padding:12px 16px;font-size:14px}
+.ok{background:#DDE6DD;border-radius:12px;padding:12px 16px;font-size:14px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div style="background:#2F4A3A;color:#F1ECE2;font-size:13px;text-align:center;padding:9px 16px;letter-spacing:.03em">500 ₺ ve üzeri siparişlerde kargo ücretsiz</div>
+
+<header style="position:sticky;top:0;z-index:20;background:rgba(246,244,240,.94);backdrop-filter:blur(10px);border-bottom:1px solid #E3DFD7">
+<div class="wrap" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;padding-top:14px;padding-bottom:14px">
+<button type="button" data-act="go" data-arg="home" style="background:none;border:0;cursor:pointer;font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;font-weight:600;color:#1F1F1D;padding:0">Mumlu Köşe</button>
+<nav style="display:flex;flex-wrap:wrap;gap:4px 22px">
+<button type="button" class="navb" data-act="go" data-arg="home">Ana Sayfa</button>
+<button type="button" class="navb" data-act="go" data-arg="shop">Ürünler</button>
+<button type="button" class="navb" data-act="go" data-arg="about">Hakkımızda</button>
+<button type="button" class="navb" data-act="go" data-arg="contact">İletişim</button>
+</nav>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<label for="ara" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Ürün ara</label>
+<input id="ara" class="inp" type="search" placeholder="Ürün ara" style="width:200px;height:42px;border-radius:999px;padding:0 18px" autocomplete="off">
+<button type="button" class="btn sm" data-act="go" data-arg="cart" style="gap:10px">Sepet <span id="cartCount" style="background:#fff;color:#2F4A3A;border-radius:999px;min-width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;padding:0 6px">0</span></button>
+</div>
+</div>
+</header>
+
+<div id="app"></div>
+
+<div id="toast" role="status" hidden style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;background:#1F1F1D;color:#F6F4F0;border-radius:999px;padding:12px 14px 12px 22px;font-size:15px;display:flex;align-items:center;gap:14px;box-shadow:0 12px 32px rgba(0,0,0,.25);max-width:calc(100vw - 24px)">
+<span id="toastText"></span>
+<button type="button" class="btn sm" data-act="go" data-arg="cart" style="background:#F6F4F0;color:#1F1F1D;height:34px;padding:0 16px;flex:none">Sepete git</button>
+</div>
+
+<footer style="background:#1F1F1D;color:#D9D5CC;margin-top:24px">
+<div class="wrap" style="padding-top:48px;padding-bottom:28px;display:flex;flex-wrap:wrap;gap:32px 64px">
+<div style="flex:2 1 260px;min-width:0;display:flex;flex-direction:column;gap:10px"><span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;font-weight:600;color:#F6F4F0">Mumlu Köşe</span><span style="font-size:15px;line-height:1.6;max-width:320px">El yapımı soya mumları, oda kokuları ve hediyelik eşyalar.</span></div>
+<div style="flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start;font-size:15px">
+<span style="color:#F6F4F0;letter-spacing:.12em;text-transform:uppercase;font-size:12px;margin-bottom:4px">Mağaza</span>
+<button type="button" class="lnk" data-act="go" data-arg="shop">Ürünler</button>
+<button type="button" class="lnk" data-act="go" data-arg="about">Hakkımızda</button>
+<button type="button" class="lnk" data-act="go" data-arg="contact">İletişim</button>
+</div>
+<div style="flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start;font-size:15px">
+<span style="color:#F6F4F0;letter-spacing:.12em;text-transform:uppercase;font-size:12px;margin-bottom:4px">Ödeme</span>
+<span>Kredi / banka kartı</span><span>Havale / EFT</span><span>Kapıda ödeme</span>
+<button type="button" class="lnk" data-act="go" data-arg="admin" style="color:#F6F4F0;text-decoration:underline;padding-top:8px">Yönetici girişi</button>
+</div>
+</div>
+<div class="wrap" style="padding-bottom:28px;font-size:13px;color:#A8A39A">Üniversite ödevi için hazırlanmış örnek mağazadır. Ödemeler gerçek değildir.</div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var CATS = ['Mumlar', 'Mum Aksesuarları', 'Oda Kokuları', 'Ev Dekorasyonu', 'Hediyelik Setler', 'Özel Koleksiyonlar'];
+  var CATBG = ['#F1DAD4', '#EAE4D9', '#DDE6DD', '#E3E8DF', '#F4DCD6', '#E3DEEC'];
+  var KEY = 'mk_state_v2';
+
+  function seed() {
+    function m(id, name, price, cat, type, tone, note, badge, old) { return { id: id, name: name, price: price, cat: cat, type: type, tone: tone, note: note, badge: badge || '', old: old || 0 }; }
+    return [
+      m(1, 'Lavanta Soya Kavanoz Mum', 289, 'Mumlar', 'kavanoz', 'lav', '200 g, yaklaşık 40 saat yanma. Lavanta ve vanilya.', 'Çok satan'),
+      m(2, 'Vanilya & Amber Mum Seti', 549, 'Mumlar', 'kavanoz', 'amber', '3 adet: 50 g, 100 g, 150 g. Kraft hediye kutusunda.', 'Yeni'),
+      m(3, 'Gül Şekilli Dekoratif Mum', 179, 'Mumlar', 'vazo', 'gul', 'Elle şekillendirilmiş, hem yanar hem dekor olur.', '', 219),
+      m(4, 'Seramik Mini Vazo', 349, 'Ev Dekorasyonu', 'vazo', 'dogal', 'Mat bej. Kurutulmuş çiçekler için.'),
+      m(5, 'Ahşap Mum Tepsisi', 259, 'Mum Aksesuarları', 'tepsi', 'dogal', 'Doğal ahşap, mumları gruplamak için.'),
+      m(6, 'Oda Spreyi: Orman Sabahı', 199, 'Oda Kokuları', 'sprey', 'sage', 'Çam ve nane notaları, 100 ml.', 'Yeni'),
+      m(7, '"Yeni Ev" Hediye Seti', 699, 'Hediyelik Setler', 'kutu', 'dogal', 'Mum, oda spreyi ve mini vazo bir arada.', '', 799),
+      m(8, 'Sevgililer Günü Kutusu', 459, 'Hediyelik Setler', 'kutu', 'gul', 'Gül mumu, çikolata alanı ve not kartı.'),
+      m(9, 'Fitil Makası', 149, 'Mum Aksesuarları', 'tepsi', 'sage', 'Temiz yanma için fitili doğru boyda tutar.'),
+      m(10, 'Mum Söndürücü', 129, 'Mum Aksesuarları', 'vazo', 'dogal', 'Paslanmaz çan, duman bırakmadan söndürür.'),
+      m(11, 'Sandal Ağacı Tütsü', 119, 'Oda Kokuları', 'sprey', 'sage', '20 çubuk, yavaş yanan sakin bir koku.'),
+      m(12, 'Kış Koleksiyonu Mum', 229, 'Özel Koleksiyonlar', 'kavanoz', 'amber', 'Tarçın ve portakal, sezonluk üretim.', 'İndirim', 279)
+    ];
+  }
+
+  var S = {
+    view: 'home', cat: 'Tümü', q: '', sort: 'pop', pay: 'kart', isAdmin: false,
+    products: seed(), cart: [], orders: [], delId: 0, adminMsg: '', adminErr: false,
+    lastNo: '', lastTotal: 0, contactSent: false, cardNum: '', cardName: '', cardExp: ''
+  };
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) {
+      var d = JSON.parse(raw);
+      if (Array.isArray(d.products)) S.products = d.products;
+      if (Array.isArray(d.orders)) S.orders = d.orders;
+      if (Array.isArray(d.cart)) S.cart = d.cart;
+    }
+  } catch (e) {}
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify({ products: S.products, orders: S.orders, cart: S.cart })); } catch (e) {}
+  }
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function fmtP(n) { return n.toLocaleString('tr-TR') + ' ₺'; }
+  function fmtT(n) { return n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₺'; }
+  function digits(v) { return String(v).replace(/\D/g, ''); }
+  function $(id) { return document.getElementById(id); }
+
+  var TYPES = {
+    kavanoz: { left: '27%', bottom: '22%', w: '46%', h: '36%', radius: '10px 10px 22px 22px', lid: true },
+    vazo: { left: '33%', bottom: '22%', w: '34%', h: '46%', radius: '40% 40% 10px 10px', lid: false },
+    tepsi: { left: '17%', bottom: '40%', w: '66%', h: '7%', radius: '4px', lid: false },
+    sprey: { left: '36%', bottom: '22%', w: '28%', h: '48%', radius: '8px 8px 14px 14px', lid: true },
+    kutu: { left: '24%', bottom: '22%', w: '52%', h: '38%', radius: '6px', lid: true }
+  };
+  var TONES = {
+    lav: { bg: '#E3DEEC', jar: '#B9B0CC', lid: '#7D7399' },
+    amber: { bg: '#F1E4CC', jar: '#C9A66B', lid: '#8E7447' },
+    gul: { bg: '#F1DAD4', jar: '#D79A9A', lid: '#9B5A5A' },
+    sage: { bg: '#DDE6DD', jar: '#7F9A84', lid: '#4E6652' },
+    dogal: { bg: '#EAE4D9', jar: '#B5A89B', lid: '#8A7D70' }
+  };
+  function visual(p) {
+    var t = TYPES[p.type] || TYPES.kavanoz, c = TONES[p.tone] || TONES.dogal;
+    return { left: t.left, bottom: t.bottom, w: t.w, h: t.h, radius: t.radius, bg: c.bg, jar: c.jar, lid: t.lid ? c.lid : 'transparent' };
+  }
+  function thumb(p, size) {
+    var v = visual(p);
+    return '<div style="position:relative;width:' + size + 'px;height:' + size + 'px;flex:0 0 ' + size + 'px;background:' + v.bg + ';border-radius:' + (size > 60 ? 14 : 10) + 'px;overflow:hidden"><div style="position:absolute;left:' + v.left + ';bottom:' + v.bottom + ';width:' + v.w + ';height:' + v.h + ';background:' + v.jar + ';border-radius:' + v.radius + '"></div></div>';
+  }
+  function pcard(p, withNote) {
+    var v = visual(p);
+    return '<div class="pc" style="flex:1 1 240px;min-width:0;max-width:100%;display:flex;flex-direction:column;gap:12px">' +
+      '<div style="position:relative;aspect-ratio:1/1;background:' + v.bg + ';border-radius:20px;overflow:hidden">' +
+      '<div style="position:absolute;left:' + v.left + ';bottom:' + v.bottom + ';width:' + v.w + ';height:' + v.h + ';background:' + v.jar + ';border-radius:' + v.radius + '"><div style="position:absolute;top:-7%;left:6%;right:6%;height:8%;background:' + v.lid + ';border-radius:4px"></div></div>' +
+      (p.badge ? '<span style="position:absolute;left:12px;top:12px;background:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;color:#2F4A3A">' + esc(p.badge) + '</span>' : '') +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px;padding:0 4px">' +
+      '<span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#4E6652">' + esc(p.cat) + '</span>' +
+      '<span style="font-size:17px;line-height:1.3;font-weight:500">' + esc(p.name) + '</span>' +
+      (withNote ? '<span style="font-size:14px;line-height:1.5;color:#5E5C56">' + esc(p.note) + '</span>' : '') +
+      '<span style="display:flex;gap:10px;align-items:baseline"><b style="font-size:18px;font-weight:600">' + fmtP(p.price) + '</b>' + (p.old ? '<s style="font-size:14px;color:#5E5C56">' + fmtP(p.old) + '</s>' : '') + '</span>' +
+      '</div>' +
+      '<button type="button" class="btn" data-act="add" data-id="' + p.id + '" style="width:100%">Sepete ekle</button></div>';
+  }
+
+  function calc() {
+    var lines = [];
+    S.cart.forEach(function (c) {
+      var p = S.products.filter(function (x) { return x.id === c.id; })[0];
+      if (p) lines.push({ p: p, qty: c.qty, total: p.price * c.qty });
+    });
+    var count = lines.reduce(function (s, l) { return s + l.qty; }, 0);
+    var sub = lines.reduce(function (s, l) { return s + l.total; }, 0);
+    var ship = (sub === 0 || sub >= 500) ? 0 : 49.9;
+    return { lines: lines, count: count, sub: sub, ship: ship, total: sub + ship };
+  }
+
+  /* ---------- Görünümler ---------- */
+  var V = {};
+
+  V.home = function () {
+    var cats = CATS.map(function (c, i) {
+      var n = S.products.filter(function (p) { return p.cat === c; }).length;
+      return '<button type="button" class="pc" data-act="cat" data-arg="' + esc(c) + '" style="flex:1 1 180px;min-width:0;height:150px;border:0;border-radius:20px;background:' + CATBG[i] + ';cursor:pointer;text-align:left;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;color:#1F1F1D"><span style="font-family:\'Cormorant Garamond\',Georgia,serif;font-size:26px;font-weight:600;line-height:1.1">' + esc(c) + '</span><span style="font-size:13px;color:#4A4843">' + n + ' ürün</span></button>';
+    }).join('');
+    var feat = S.products.slice(0, 8).map(function (p) { return pcard(p, false); }).join('');
+    return '<main>' +
+      '<section class="wrap" style="padding-top:28px"><div style="background:#F1DAD4;border-radius:32px;overflow:hidden;display:flex;flex-wrap:wrap;align-items:stretch">' +
+      '<div style="flex:1 1 420px;min-width:0;padding:clamp(32px,5vw,72px);display:flex;flex-direction:column;justify-content:center;gap:22px">' +
+      '<span style="align-self:flex-start;background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:500;color:#2F4A3A">Sonbahar koleksiyonu yayında</span>' +
+      '<h1 style="font-size:clamp(50px,6.4vw,90px);line-height:.98;text-wrap:balance">Evine sıcaklık kat.</h1>' +
+      '<p style="margin:0;font-size:18px;line-height:1.6;color:#4A4843;max-width:440px">El yapımı soya mumları ve özenle seçilmiş hediyelik eşyalar. Küçük partilerde, tek tek elle dökülür.</p>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px"><button type="button" class="btn" data-act="shopall">Alışverişe Başla</button><button type="button" class="btn2" data-act="go" data-arg="about">Hikayemiz</button></div></div>' +
+      '<div style="flex:1 1 420px;min-width:0;min-height:460px;position:relative;overflow:hidden;background:#E8C9C0">' +
+      '<div style="position:absolute;left:10%;bottom:14%;width:30%;height:32%;background:#C9A66B;border-radius:10px 10px 24px 24px"><div style="position:absolute;top:-8%;left:6%;right:6%;height:9%;background:#8E7447;border-radius:5px"></div></div>' +
+      '<div style="position:absolute;left:46%;bottom:14%;width:38%;height:46%;background:#B9B0CC;border-radius:10px 10px 28px 28px"><div style="position:absolute;top:-6%;left:6%;right:6%;height:7%;background:#7D7399;border-radius:5px"></div></div>' +
+      '<div style="position:absolute;left:6%;right:6%;bottom:10%;height:4%;background:#D9B3A8;border-radius:3px"></div>' +
+      '<div class="card" style="position:absolute;left:20px;top:20px;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.4"><b style="font-weight:600">%100 soya mumu</b><br><span style="color:#5E5C56">Parafin yok, katkı yok</span></div></div>' +
+      '</div></section>' +
+      '<section class="wrap" style="padding-top:56px"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px;margin-bottom:22px"><h2 style="font-size:40px">Kategoriler</h2><button type="button" class="btn2 sm" data-act="shopall">Tüm ürünler</button></div><div style="display:flex;flex-wrap:wrap;gap:14px">' + cats + '</div></section>' +
+      '<section class="wrap" style="padding-top:56px"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px;margin-bottom:22px"><h2 style="font-size:40px">Öne çıkan ürünler</h2><span style="font-size:14px;color:#5E5C56">Fiyatlar örnektir</span></div><div style="display:flex;flex-wrap:wrap;gap:28px 18px">' + feat + '</div></section>' +
+      '<section class="wrap" style="padding-top:64px"><div style="background:#1F1F1D;color:#F6F4F0;border-radius:32px;padding:clamp(32px,5vw,72px);display:flex;flex-wrap:wrap;gap:28px 64px;align-items:center"><h2 style="flex:1 1 340px;min-width:0;font-size:clamp(34px,4.2vw,56px);line-height:1.05;text-wrap:balance">Bir mutfak masasında başlayan tutku.</h2><div style="flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:18px"><p style="margin:0;font-size:18px;line-height:1.65;color:#D9D5CC">Evlerin daha sıcak, daha huzurlu olabileceğine inanıyoruz. Her mumu doğal soya mumu ve özenle seçilmiş kokularla, tek tek elle üretiyoruz.</p><button type="button" class="btn" data-act="go" data-arg="about" style="align-self:flex-start;background:#F6F4F0;color:#1F1F1D">Hikayemizi okuyun</button></div></div></section>' +
+      '<section class="wrap" style="padding-top:56px;padding-bottom:72px"><div style="display:flex;flex-wrap:wrap;gap:16px">' +
+      [['El yapımı', 'Her ürün küçük partilerde dökülür, her mum biraz farklıdır.'], ['Doğal içerik', 'Soya mumu ve pamuk fitil. Parafin yok, zararlı katkı yok.'], ['Hediye paketi', 'Kraft kutu ve el yazısı not kartıyla hediyeye hazır gelir.']].map(function (x) {
+        return '<div class="card" style="flex:1 1 260px;min-width:0;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:28px">' + x[0] + '</h3><p style="margin:0;font-size:16px;line-height:1.6;color:#5E5C56">' + x[1] + '</p></div>';
+      }).join('') + '</div></section></main>';
+  };
+
+  V.shop = function () {
+    var q = S.q.toLowerCase().trim();
+    var shown = S.products.filter(function (p) {
+      return (S.cat === 'Tümü' || p.cat === S.cat) && (!q || (p.name + ' ' + p.cat + ' ' + p.note).toLowerCase().indexOf(q) >= 0);
+    });
+    if (S.sort === 'asc') shown = shown.slice().sort(function (a, b) { return a.price - b.price; });
+    if (S.sort === 'desc') shown = shown.slice().sort(function (a, b) { return b.price - a.price; });
+    var chips = ['Tümü'].concat(CATS).map(function (n) { return '<button type="button" class="chip' + (n === S.cat ? ' on' : '') + '" data-act="cat" data-arg="' + esc(n) + '">' + esc(n) + '</button>'; }).join('');
+    var sorts = [['pop', 'Popüler'], ['asc', 'Fiyat artan'], ['desc', 'Fiyat azalan']].map(function (s) { return '<button type="button" class="chip' + (s[0] === S.sort ? ' on' : '') + '" data-act="sort" data-arg="' + s[0] + '" style="height:36px">' + s[1] + '</button>'; }).join('');
+    return '<main class="wrap" style="padding-top:36px;padding-bottom:72px;display:flex;flex-direction:column;gap:22px">' +
+      '<h1 style="font-size:clamp(42px,5vw,64px);line-height:1">Ürünler</h1>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:8px">' + chips + '</div>' +
+      '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding-top:14px;border-top:1px solid #E3DFD7"><span style="font-size:14px;color:#5E5C56">' + shown.length + ' ürün gösteriliyor</span><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-size:14px;color:#5E5C56">Sırala:</span>' + sorts + '</div></div>' +
+      (shown.length ? '' : '<div class="card" style="padding:40px;text-align:center;color:#5E5C56">Bu aramaya uygun ürün bulunamadı.</div>') +
+      '<div style="display:flex;flex-wrap:wrap;gap:28px 18px">' + shown.map(function (p) { return pcard(p, true); }).join('') + '</div></main>';
+  };
+
+  V.cart = function () {
+    var c = calc();
+    var head = '<main class="wrap" style="padding-top:36px;padding-bottom:72px;display:flex;flex-direction:column;gap:24px"><h1 style="font-size:clamp(42px,5vw,64px);line-height:1">Sepetim</h1>';
+    if (!c.lines.length) {
+      return head + '<div class="card" style="padding:48px;display:flex;flex-direction:column;gap:16px;align-items:flex-start"><span style="font-size:18px;color:#5E5C56">Sepetin şu an boş.</span><button type="button" class="btn" data-act="shopall">Ürünleri keşfet</button></div></main>';
+    }
+    var rows = c.lines.map(function (l) {
+      return '<div class="card" style="display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;padding:16px">' + thumb(l.p, 96) +
+        '<div style="flex:1 1 180px;min-width:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:17px;font-weight:500;line-height:1.3">' + esc(l.p.name) + '</span><span style="font-size:14px;color:#5E5C56">Birim fiyat: ' + fmtP(l.p.price) + '</span></div>' +
+        '<div style="display:flex;align-items:center;gap:10px"><button type="button" class="ib" aria-label="Azalt" data-act="dec" data-id="' + l.p.id + '">−</button><b style="min-width:24px;text-align:center;font-weight:600">' + l.qty + '</b><button type="button" class="ib" aria-label="Arttır" data-act="inc" data-id="' + l.p.id + '">+</button></div>' +
+        '<b style="font-size:18px;font-weight:600;min-width:96px;text-align:right">' + fmtT(l.total) + '</b>' +
+        '<button type="button" class="btn2 sm" data-act="rm" data-id="' + l.p.id + '">Kaldır</button></div>';
+    }).join('');
+    var note = c.sub >= 500 ? 'Kargo ücretsiz.' : 'Ücretsiz kargo için ' + fmtT(500 - c.sub) + ' daha ekle.';
+    return head + '<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start"><div style="flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:14px">' + rows + '</div>' +
+      '<div class="card" style="flex:1 1 300px;min-width:0;padding:24px;display:flex;flex-direction:column;gap:14px;position:sticky;top:96px"><h3 style="font-size:28px">Sipariş özeti</h3>' +
+      '<div style="display:flex;justify-content:space-between;font-size:15px"><span style="color:#5E5C56">Ara toplam</span><span>' + fmtT(c.sub) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:15px"><span style="color:#5E5C56">Kargo</span><span>' + (c.ship ? fmtT(c.ship) : 'Ücretsiz') + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:20px;font-weight:600;padding-top:14px;border-top:1px solid #E3DFD7"><span>Toplam</span><span>' + fmtT(c.total) + '</span></div>' +
+      '<span style="font-size:13px;color:#5E5C56">' + note + '</span>' +
+      '<button type="button" class="btn" data-act="go" data-arg="checkout">Ödemeye geç</button><button type="button" class="btn2" data-act="shopall">Alışverişe devam et</button></div></div></main>';
+  };
+
+  var PAYNAMES = { kart: 'Kredi / banka kartı', havale: 'Havale / EFT', kapida: 'Kapıda ödeme' };
+  var PAYTEXT = {
+    havale: 'Siparişi tamamladıktan sonra IBAN bilgisi gösterilir. Havale onaylanınca ürünlerin kargoya verilir.',
+    kapida: 'Ürünler teslim edilirken nakit veya kartla ödersin. Kapıda ödeme için +19,90 ₺ hizmet bedeli alınır.'
+  };
+
+  function field(id, name, label, ph, extra) {
+    return '<div style="flex:1 1 220px;min-width:0"><label class="lbl" for="' + id + '">' + label + '</label><input class="inp" id="' + id + '" name="' + name + '" type="text" autocomplete="off"' + (ph ? ' placeholder="' + ph + '"' : '') + (extra || '') + '></div>';
+  }
+
+  V.checkout = function () {
+    var c = calc();
+    if (!c.lines.length) {
+      return '<main class="wrap" style="padding-top:36px;padding-bottom:72px"><h1 style="font-size:clamp(42px,5vw,64px);line-height:1;margin-bottom:24px">Ödeme</h1><div class="card" style="padding:40px;display:flex;flex-direction:column;gap:16px;align-items:flex-start"><span style="font-size:18px;color:#5E5C56">Ödeme için sepetinde ürün olmalı.</span><button type="button" class="btn" data-act="shopall">Ürünleri keşfet</button></div></main>';
+    }
+    var chips = Object.keys(PAYNAMES).map(function (k) { return '<button type="button" class="chip' + (k === S.pay ? ' on' : '') + '" data-act="pay" data-arg="' + k + '">' + PAYNAMES[k] + '</button>'; }).join('');
+    var sum = c.lines.map(function (l) { return '<div style="display:flex;justify-content:space-between;gap:12px;font-size:14px"><span style="min-width:0">' + l.qty + ' × ' + esc(l.p.name) + '</span><span style="white-space:nowrap">' + fmtT(l.total) + '</span></div>'; }).join('');
+    return '<main class="wrap" style="padding-top:36px;padding-bottom:72px;display:flex;flex-direction:column;gap:24px"><h1 style="font-size:clamp(42px,5vw,64px);line-height:1">Ödeme</h1>' +
+      '<form data-form="order" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start"><div style="flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:20px">' +
+      '<div class="card" style="padding:24px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:28px">Teslimat bilgileri</h3>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:14px">' + field('ck-ad', 'ad', 'Ad Soyad') + field('ck-tel', 'tel', 'Telefon', '05xx xxx xx xx') + '</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:14px">' + field('ck-adres', 'adres', 'Adres') + '</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:14px">' + field('ck-il', 'il', 'İl') + field('ck-posta', 'posta', 'Posta kodu') + '</div></div>' +
+      '<div class="card" style="padding:24px;display:flex;flex-direction:column;gap:16px"><h3 style="font-size:28px">Ödeme yöntemi</h3><div style="display:flex;flex-wrap:wrap;gap:8px">' + chips + '</div>' +
+      '<div id="payCard" style="display:' + (S.pay === 'kart' ? 'flex' : 'none') + ';flex-wrap:wrap;gap:20px;align-items:flex-start">' +
+      '<div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px">' +
+      '<div><label class="lbl" for="kk-ad">Karttaki isim</label><input class="inp" id="kk-ad" name="kname" type="text" autocomplete="off" data-in="cname"></div>' +
+      '<div><label class="lbl" for="kk-no">Kart numarası</label><input class="inp" id="kk-no" name="knum" type="text" inputmode="numeric" autocomplete="off" placeholder="0000 0000 0000 0000" data-in="cnum"></div>' +
+      '<div style="display:flex;gap:14px"><div style="flex:1;min-width:0"><label class="lbl" for="kk-skt">Son kullanma (AA/YY)</label><input class="inp" id="kk-skt" name="kexp" type="text" inputmode="numeric" autocomplete="off" placeholder="AA/YY" data-in="cexp"></div>' +
+      '<div style="flex:1;min-width:0"><label class="lbl" for="kk-cvv">CVV</label><input class="inp" id="kk-cvv" name="kcvv" type="password" inputmode="numeric" autocomplete="off" placeholder="•••" data-in="ccvv"></div></div>' +
+      '<span style="font-size:13px;color:#5E5C56">Demo ödeme: kart bilgileri hiçbir yere gönderilmez. Deneme için 4242 4242 4242 4242, 12/30, 123 kullanabilirsin.</span></div>' +
+      '<div style="flex:1 1 280px;min-width:0;max-width:380px;aspect-ratio:1.586/1;background:#1F1F1D;color:#F6F4F0;border-radius:20px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden"><div style="position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:#2F4A3A"></div>' +
+      '<div style="position:relative;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#C9C4B8">Mumlu Köşe Pay</div><div id="pvNum" style="position:relative;font-size:clamp(18px,2.4vw,24px);letter-spacing:.12em;font-variant-numeric:tabular-nums">•••• •••• •••• ••••</div>' +
+      '<div style="position:relative;display:flex;justify-content:space-between;gap:12px;font-size:14px;letter-spacing:.08em;text-transform:uppercase"><span id="pvName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ad Soyad</span><span id="pvExp">AA/YY</span></div></div></div>' +
+      '<p id="payOther" style="margin:0;font-size:15px;line-height:1.6;color:#5E5C56;display:' + (S.pay === 'kart' ? 'none' : 'block') + '">' + (PAYTEXT[S.pay] || '') + '</p>' +
+      '<div id="payErr" role="alert" class="err" hidden></div></div></div>' +
+      '<div class="card" style="flex:1 1 300px;min-width:0;padding:24px;display:flex;flex-direction:column;gap:12px;position:sticky;top:96px"><h3 style="font-size:28px">Sipariş özeti</h3>' + sum +
+      '<div style="display:flex;justify-content:space-between;font-size:15px;padding-top:12px;border-top:1px solid #E3DFD7"><span style="color:#5E5C56">Ara toplam</span><span>' + fmtT(c.sub) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:15px"><span style="color:#5E5C56">Kargo</span><span>' + (c.ship ? fmtT(c.ship) : 'Ücretsiz') + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:20px;font-weight:600;padding-top:12px;border-top:1px solid #E3DFD7"><span>Toplam</span><span>' + fmtT(c.total) + '</span></div>' +
+      '<button type="submit" class="btn">Siparişi tamamla</button><button type="button" class="btn2" data-act="go" data-arg="cart">Sepete dön</button></div></form></main>';
+  };
+
+  V.done = function () {
+    return '<main class="wrap" style="padding-top:48px;padding-bottom:80px"><div class="card" style="max-width:640px;margin:0 auto;padding:clamp(28px,5vw,56px);display:flex;flex-direction:column;gap:16px"><span style="align-self:flex-start;background:#DDE6DD;color:#2F4A3A;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600">Sipariş alındı</span><h1 style="font-size:clamp(38px,5vw,56px);line-height:1">Teşekkürler!</h1><p style="margin:0;font-size:17px;line-height:1.6;color:#5E5C56">Siparişin hazırlanıyor. Sipariş numaran <b style="color:#1F1F1D">' + esc(S.lastNo) + '</b>, ödenen tutar <b style="color:#1F1F1D">' + fmtT(S.lastTotal) + '</b>.</p><p style="margin:0;font-size:14px;color:#5E5C56">Bu bir demo siteydi, gerçek bir ödeme alınmadı.</p><button type="button" class="btn" data-act="shopall" style="align-self:flex-start">Alışverişe devam et</button></div></main>';
+  };
+
+  V.about = function () {
+    function box(t, x) { return '<div class="card" style="flex:1 1 260px;min-width:0;padding:28px;display:flex;flex-direction:column;gap:10px"><h3 style="font-size:28px">' + t + '</h3><p style="margin:0;font-size:16px;line-height:1.6;color:#5E5C56">' + x + '</p></div>'; }
+    function step(n, t, x) { return '<div class="card" style="flex:1 1 260px;min-width:0;padding:24px;display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#4E6652">Adım ' + n + '</span><h3 style="font-size:26px">' + t + '</h3><p style="margin:0;font-size:15px;line-height:1.6;color:#5E5C56">' + x + '</p></div>'; }
+    return '<main class="wrap" style="padding-top:36px;padding-bottom:72px;display:flex;flex-direction:column;gap:32px">' +
+      '<div style="background:#E6DFD3;border-radius:32px;padding:clamp(32px,5vw,72px);display:flex;flex-wrap:wrap;gap:28px 64px;align-items:center"><div style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:16px"><span style="font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#4E6652">Hakkımızda</span><h1 style="font-size:clamp(42px,5.4vw,76px);line-height:1;text-wrap:balance">Küçük bir atölye, sıcak bir ev fikri.</h1></div>' +
+      '<div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:16px;font-size:18px;line-height:1.7;color:#3E3C37"><p style="margin:0">Mumlu Köşe, küçük bir mutfak masasında başlayan bir tutkudan doğdu. Evlerin daha sıcak, daha huzurlu olabileceğine inanıyoruz.</p><p style="margin:0">Her mumu doğal soya mumu ve özenle seçilmiş kokularla, tek tek elle üretiyoruz. Kavanozlar yeniden kullanılabilir, ambalajlar geri dönüştürülebilir.</p></div></div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:16px">' + box('Doğal içerik', 'Parafin yok, zararlı katkı yok.') + box('El işçiliği', 'Her ürün küçük partilerde dökülür.') + box('Sürdürülebilirlik', 'Geri dönüştürülebilir ambalaj, yeniden kullanılabilir kavanozlar.') + '</div>' +
+      '<h2 style="font-size:40px">Nasıl üretiyoruz?</h2>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:16px">' + step(1, 'Döküyoruz', 'Soya mumu eritilir, koku ile karıştırılıp kavanoza elle dökülür.') + step(2, 'Dinlendiriyoruz', 'Mumlar birkaç gün dinlenir, koku mumun içine yerleşir.') + step(3, 'Paketliyoruz', 'Kontrol edilen her mum kraft kutuya ve not kartına sarılır.') + '</div></main>';
+  };
+
+  V.contact = function () {
+    var right = S.contactSent
+      ? '<div style="display:flex;flex-direction:column;gap:10px"><h2 style="font-size:34px">Mesajın alındı</h2><p style="margin:0;color:#5E5C56;line-height:1.6">Bu örnek bir formdur, mesaj gerçekte gönderilmez. Canlı sitede WPForms ile e-postana iletilir.</p></div>'
+      : '<form data-form="contact" style="display:flex;flex-direction:column;gap:16px"><h2 style="font-size:34px">Mesaj gönderin</h2>' +
+        '<div><label class="lbl" for="ic-ad">Ad</label><input class="inp" id="ic-ad" name="ad" type="text"></div>' +
+        '<div><label class="lbl" for="ic-ep">E-posta</label><input class="inp" id="ic-ep" name="ep" type="email"></div>' +
+        '<div><label class="lbl" for="ic-konu">Konu</label><input class="inp" id="ic-konu" name="konu" type="text"></div>' +
+        '<div><label class="lbl" for="ic-msg">Mesaj</label><textarea class="inp" id="ic-msg" name="msg" rows="5"></textarea></div>' +
+        '<button type="submit" class="btn" style="align-self:flex-start">Gönder</button></form>';
+    function row(l, v) { return '<div><span style="display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#4E6652">' + l + '</span>' + v + '</div>'; }
+    return '<main class="wrap" style="padding-top:36px;padding-bottom:72px;display:flex;flex-wrap:wrap;gap:32px 64px;align-items:flex-start"><div style="flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:22px"><h1 style="font-size:clamp(42px,5vw,68px);line-height:1">Bize ulaşın</h1><p style="margin:0;font-size:18px;line-height:1.6;color:#5E5C56;max-width:420px">Sipariş, kargo veya özel tasarım talepleriniz için yazın. 24 saat içinde dönüş yapıyoruz.</p><div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;font-size:16px">' +
+      row('E-posta', 'merhaba@mumlukose.com') + row('Telefon', '[0 000 000 00 00]') + row('Çalışma saatleri', 'Hafta içi 09.00 - 18.00') + row('Adres', 'Online mağaza') + '</div></div>' +
+      '<div class="card" style="flex:1 1 400px;min-width:0;padding:clamp(22px,4vw,40px)">' + right + '</div></main>';
+  };
+
+  V.admin = function () {
+    if (!S.isAdmin) {
+      return '<main class="wrap" style="padding-top:48px;padding-bottom:80px"><form data-form="login" class="card" style="max-width:420px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:16px"><h1 style="font-size:40px;line-height:1">Yönetici girişi</h1>' +
+        '<div><label class="lbl" for="ad-user">Kullanıcı adı</label><input class="inp" id="ad-user" name="user" type="text" autocomplete="off"></div>' +
+        '<div><label class="lbl" for="ad-pass">Şifre</label><input class="inp" id="ad-pass" name="pass" type="password" autocomplete="off"></div>' +
+        '<div id="loginErr" role="alert" class="err" hidden></div><button type="submit" class="btn">Giriş yap</button>' +
+        '<span style="font-size:13px;line-height:1.5;color:#5E5C56">Demo hesabı: kullanıcı adı admin, şifre mumlu123. Gerçek sitede giriş WordPress yönetim paneli ile yapılır.</span></form></main>';
+    }
+    var rev = S.orders.reduce(function (s, o) { return s + o.total; }, 0);
+    function stat(l, v) { return '<div class="card" style="flex:1 1 180px;padding:20px"><span style="font-size:13px;color:#5E5C56">' + l + '</span><div style="font-size:34px;font-weight:600;font-family:\'Cormorant Garamond\',Georgia,serif">' + v + '</div></div>'; }
+    var list = S.products.map(function (p) {
+      var arm = S.delId === p.id;
+      return '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:10px 0;border-top:1px solid #EFEBE3">' + thumb(p, 48) +
+        '<div style="flex:1 1 160px;min-width:0"><div style="font-size:15px;font-weight:500">' + esc(p.name) + '</div><div style="font-size:13px;color:#5E5C56">' + esc(p.cat) + '</div></div>' +
+        '<b style="font-size:15px;font-weight:600;min-width:72px;text-align:right">' + fmtP(p.price) + '</b>' +
+        '<button type="button" class="btn2 sm" data-act="del" data-id="' + p.id + '"' + (arm ? ' style="border-color:#7A2A20;color:#7A2A20"' : '') + '>' + (arm ? 'Emin misin?' : 'Sil') + '</button></div>';
+    }).join('');
+    var orders = S.orders.length ? S.orders.slice(0, 8).map(function (o) {
+      return '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;padding:10px 0;border-top:1px solid #EFEBE3;font-size:15px"><span><b style="font-weight:600">' + esc(o.no) + '</b> · ' + esc(o.who) + '</span><span style="color:#5E5C56">' + o.items + ' ürün · ' + esc(o.pay) + '</span><b style="font-weight:600">' + fmtT(o.total) + '</b></div>';
+    }).join('') : '<span style="font-size:15px;color:#5E5C56">Henüz sipariş yok. Müşteri tarafında bir sipariş tamamlayınca burada görünür.</span>';
+    var catOpts = CATS.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+    return '<main class="wrap" style="padding-top:36px;padding-bottom:80px;display:flex;flex-direction:column;gap:24px">' +
+      '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px"><h1 style="font-size:clamp(40px,5vw,60px);line-height:1">Yönetim paneli</h1><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn2 sm" data-act="resetp">Varsayılan ürünleri yükle</button><button type="button" class="btn2 sm" data-act="logout">Çıkış yap</button></div></div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:14px">' + stat('Ürün sayısı', S.products.length) + stat('Sipariş sayısı', S.orders.length) + stat('Toplam ciro', fmtT(rev)) + '</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">' +
+      '<form data-form="addp" class="card" style="flex:1 1 320px;min-width:0;padding:24px;display:flex;flex-direction:column;gap:14px"><h2 style="font-size:30px">Ürün ekle</h2>' +
+      '<div><label class="lbl" for="np-ad">Ürün adı</label><input class="inp" id="np-ad" name="pname" type="text" autocomplete="off"></div>' +
+      '<div style="display:flex;gap:12px"><div style="flex:1;min-width:0"><label class="lbl" for="np-fiyat">Fiyat (₺)</label><input class="inp" id="np-fiyat" name="pprice" type="text" inputmode="numeric" autocomplete="off"></div><div style="flex:1;min-width:0"><label class="lbl" for="np-eski">Eski fiyat (ops.)</label><input class="inp" id="np-eski" name="pold" type="text" inputmode="numeric" autocomplete="off"></div></div>' +
+      '<div><label class="lbl" for="np-kat">Kategori</label><select class="inp" id="np-kat" name="pcat">' + catOpts + '</select></div>' +
+      '<div style="display:flex;gap:12px"><div style="flex:1;min-width:0"><label class="lbl" for="np-tip">Görsel tipi</label><select class="inp" id="np-tip" name="ptype"><option value="kavanoz">Kavanoz</option><option value="vazo">Vazo</option><option value="tepsi">Tepsi</option><option value="sprey">Şişe</option><option value="kutu">Kutu</option></select></div><div style="flex:1;min-width:0"><label class="lbl" for="np-renk">Renk</label><select class="inp" id="np-renk" name="ptone"><option value="lav">Lavanta</option><option value="amber">Amber</option><option value="gul">Gül</option><option value="sage">Adaçayı</option><option value="dogal">Doğal</option></select></div></div>' +
+      '<div><label class="lbl" for="np-not">Kısa açıklama</label><textarea class="inp" id="np-not" name="pnote" rows="3"></textarea></div>' +
+      '<div id="adminMsg" role="status" class="' + (S.adminErr ? 'err' : 'ok') + '"' + (S.adminMsg ? '' : ' hidden') + '>' + esc(S.adminMsg) + '</div>' +
+      '<button type="submit" class="btn">Ürünü ekle</button></form>' +
+      '<div style="flex:2 1 420px;min-width:0;display:flex;flex-direction:column;gap:24px"><div class="card" style="padding:24px;display:flex;flex-direction:column;gap:10px"><h2 style="font-size:30px;margin-bottom:6px">Ürünler</h2>' + list + '</div>' +
+      '<div class="card" style="padding:24px;display:flex;flex-direction:column;gap:10px"><h2 style="font-size:30px;margin-bottom:6px">Siparişler</h2>' + orders + '</div></div></div></main>';
+  };
+
+  /* ---------- Çizim ---------- */
+  var app = $('app');
+  function render() {
+    app.innerHTML = (V[S.view] || V.home)();
+    var navs = document.querySelectorAll('.navb');
+    for (var i = 0; i < navs.length; i++) navs[i].classList.toggle('on', navs[i].getAttribute('data-arg') === S.view);
+    $('cartCount').textContent = calc().count;
+  }
+  function go(view) {
+    S.view = view;
+    $('toast').hidden = true;
+    render();
+    window.scrollTo(0, 0);
+  }
+  var toastTimer;
+  function toast(text) {
+    $('toastText').textContent = text;
+    $('toast').hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { $('toast').hidden = true; }, 2600);
+  }
+  function setCart(cart) { S.cart = cart; save(); }
+
+  /* ---------- Olaylar ---------- */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el) return;
+    var act = el.getAttribute('data-act'), arg = el.getAttribute('data-arg'), id = parseInt(el.getAttribute('data-id'), 10) || 0;
+    var p;
+    switch (act) {
+      case 'go': go(arg); break;
+      case 'shopall': S.cat = 'Tümü'; S.q = ''; $('ara').value = ''; go('shop'); break;
+      case 'cat': S.cat = arg; if (S.view !== 'shop') go('shop'); else render(); break;
+      case 'sort': S.sort = arg; render(); break;
+      case 'add':
+        var f = S.cart.filter(function (c) { return c.id === id; })[0];
+        var cart = S.cart.map(function (c) { return { id: c.id, qty: c.qty }; });
+        if (f) cart.forEach(function (c) { if (c.id === id) c.qty += 1; }); else cart.push({ id: id, qty: 1 });
+        setCart(cart);
+        p = S.products.filter(function (x) { return x.id === id; })[0];
+        $('cartCount').textContent = calc().count;
+        toast((p ? p.name : 'Ürün') + ' sepete eklendi');
+        break;
+      case 'inc': case 'dec':
+        setCart(S.cart.map(function (c) { return c.id === id ? { id: id, qty: c.qty + (act === 'inc' ? 1 : -1) } : c; }).filter(function (c) { return c.qty > 0; }));
+        render(); break;
+      case 'rm': setCart(S.cart.filter(function (c) { return c.id !== id; })); render(); break;
+      case 'pay':
+        S.pay = arg;
+        var chips = document.querySelectorAll('[data-act="pay"]');
+        for (var i = 0; i < chips.length; i++) chips[i].classList.toggle('on', chips[i].getAttribute('data-arg') === arg);
+        $('payCard').style.display = arg === 'kart' ? 'flex' : 'none';
+        $('payOther').style.display = arg === 'kart' ? 'none' : 'block';
+        $('payOther').textContent = PAYTEXT[arg] || '';
+        $('payErr').hidden = true;
+        break;
+      case 'del':
+        if (S.delId === id) {
+          p = S.products.filter(function (x) { return x.id === id; })[0];
+          S.products = S.products.filter(function (x) { return x.id !== id; });
+          S.cart = S.cart.filter(function (c) { return c.id !== id; });
+          S.delId = 0; S.adminMsg = '"' + (p ? p.name : '') + '" silindi.'; S.adminErr = false; save();
+        } else S.delId = id;
+        render(); break;
+      case 'resetp': S.products = seed(); S.cart = []; S.adminMsg = 'Varsayılan ürünler yüklendi.'; S.adminErr = false; save(); render(); break;
+      case 'logout': S.isAdmin = false; S.adminMsg = ''; go('home'); break;
+    }
+  });
+
+  $('ara').addEventListener('input', function (e) {
+    S.q = e.target.value;
+    S.view = 'shop';
+    render();
+  });
+
+  document.addEventListener('input', function (e) {
+    var t = e.target.getAttribute && e.target.getAttribute('data-in');
+    if (!t) return;
+    var v = e.target.value;
+    if (t === 'cnum') { v = digits(v).slice(0, 16).replace(/(.{4})/g, '$1 ').trim(); e.target.value = v; $('pvNum').textContent = v || '•••• •••• •••• ••••'; }
+    if (t === 'cexp') { v = digits(v).slice(0, 4); if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2); e.target.value = v; $('pvExp').textContent = v || 'AA/YY'; }
+    if (t === 'cname') { $('pvName').textContent = v.slice(0, 26) || 'Ad Soyad'; }
+    if (t === 'ccvv') { e.target.value = digits(v).slice(0, 4); }
+  });
+
+  function showErr(id, msg) { var el = $(id); el.textContent = msg; el.hidden = false; }
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target, kind = form.getAttribute('data-form');
+    if (!kind) return;
+    e.preventDefault();
+    var f = form.elements;
+    if (kind === 'contact') { S.contactSent = true; render(); return; }
+    if (kind === 'login') {
+      if (f.user.value.trim() === 'admin' && f.pass.value === 'mumlu123') { S.isAdmin = true; render(); }
+      else showErr('loginErr', 'Kullanıcı adı veya şifre hatalı.');
+      return;
+    }
+    if (kind === 'addp') {
+      var name = f.pname.value.trim(), price = parseInt(digits(f.pprice.value), 10), old = parseInt(digits(f.pold.value), 10) || 0;
+      if (!name || !price) { var m = $('adminMsg'); m.className = 'err'; m.textContent = 'Ürün adı ve geçerli bir fiyat gir.'; m.hidden = false; return; }
+      var id = S.products.reduce(function (mx, p) { return Math.max(mx, p.id); }, 0) + 1;
+      S.products = [{ id: id, name: name, price: price, old: old > price ? old : 0, cat: f.pcat.value, type: f.ptype.value, tone: f.ptone.value, note: f.pnote.value.trim() || 'Yeni ürün.', badge: 'Yeni' }].concat(S.products);
+      S.adminMsg = '"' + name + '" eklendi. Mağazada ilk sırada görünür.'; S.adminErr = false; save(); render();
+      return;
+    }
+    if (kind === 'order') {
+      var ad = f.ad.value.trim(), adres = f.adres.value.trim(), il = f.il.value.trim(), tel = f.tel.value.trim();
+      if (!ad || !adres || !il || !tel) { showErr('payErr', 'Teslimat bilgilerini (ad, telefon, adres, il) eksiksiz doldur.'); return; }
+      if (S.pay === 'kart') {
+        var num = digits(f.knum.value), exp = f.kexp.value, cvv = digits(f.kcvv.value), mm = parseInt(exp.slice(0, 2), 10);
+        if (!f.kname.value.trim()) { showErr('payErr', 'Karttaki ismi yaz.'); return; }
+        if (num.length !== 16) { showErr('payErr', 'Kart numarası 16 haneli olmalı.'); return; }
+        if (!/^\d\d\/\d\d$/.test(exp) || mm < 1 || mm > 12) { showErr('payErr', 'Son kullanma tarihini AA/YY biçiminde yaz.'); return; }
+        if (cvv.length < 3) { showErr('payErr', 'CVV en az 3 haneli olmalı.'); return; }
+      }
+      var c = calc();
+      var no = 'MK-' + String(Math.floor(100000 + Math.random() * 900000));
+      S.orders = [{ no: no, who: ad, items: c.count, pay: PAYNAMES[S.pay], total: c.total }].concat(S.orders);
+      S.lastNo = no; S.lastTotal = c.total; S.cart = []; save();
+      go('done');
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
